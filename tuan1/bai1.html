@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài 1</title>
+</head>
+<body>
+<pre id="output"></pre>
+<script>
+function Product(id,name,price,quantity,category,isAvailable){
+  this.id=id;
+  this.name=name;
+  this.price=price;
+  this.quantity=quantity;
+  this.category=category;
+  this.isAvailable=isAvailable;
+}
+
+var productsJson = JSON.stringify([
+  {"id":1,"name":"Laptop Pro","price":25000000,"quantity":5,"category":"Electronics","isAvailable":true},
+  {"id":2,"name":"Phone X","price":18000000,"quantity":0,"category":"Electronics","isAvailable":false},
+  {"id":3,"name":"Mouse Wireless","price":500000,"quantity":20,"category":"Accessories","isAvailable":true},
+  {"id":4,"name":"Keyboard RGB","price":1500000,"quantity":10,"category":"Accessories","isAvailable":true},
+  {"id":5,"name":"Monitor 4K","price":8000000,"quantity":3,"category":"Electronics","isAvailable":true},
+  {"id":6,"name":"Headphone","price":1200000,"quantity":0,"category":"Accessories","isAvailable":false}
+]);
+
+var productsData = JSON.parse(productsJson);
+var products = productsData.map(function(p){
+  return new Product(p.id,p.name,p.price,p.quantity,p.category,p.isAvailable);
+});
+
+var output = document.getElementById("output");
+function log(label,value){
+  var text = label + ": " + JSON.stringify(value,null,2) + "\n\n";
+  output.textContent += text;
+  console.log(label,value);
+}
+
+var namePriceList = products.map(function(p){
+  return {name:p.name,price:p.price};
+});
+
+var inStockProducts = products.filter(function(p){
+  return p.quantity>0;
+});
+
+var hasExpensiveProduct = products.some(function(p){
+  return p.price>30000000;
+});
+
+var accessoriesAllAvailable = products
+  .filter(function(p){return p.category==="Accessories";})
+  .every(function(p){return p.isAvailable===true;});
+
+var totalInventoryValue = products.reduce(function(sum,p){
+  return sum + p.price*p.quantity;
+},0);
+
+var forOfResult = [];
+for(var p of products){
+  var trangThai = p.isAvailable ? "Đang bán" : "Ngừng bán";
+  forOfResult.push(p.name+" - "+p.category+" - "+trangThai);
+}
+
+var forInProps = [];
+var forInValues = [];
+var sampleProduct = products[0];
+for(var key in sampleProduct){
+  forInProps.push(key);
+  forInValues.push(sampleProduct[key]);
+}
+
+var sellingAndInStockNames = products
+  .filter(function(p){return p.isAvailable && p.quantity>0;})
+  .map(function(p){return p.name;});
+
+console.log("Cau 1 + 2 - Mang products",products);
+console.log("Cau 3 - Mang name, price",namePriceList);
+console.log("Cau 4 - San pham con hang",inStockProducts);
+console.log("Cau 5 - Co san pham gia > 30.000.000",hasExpensiveProduct);
+console.log("Cau 6 - Accessories tat ca dang ban",accessoriesAllAvailable);
+console.log("Cau 7 - Tong gia tri kho hang",totalInventoryValue);
+console.log("Cau 8 - for...of",forOfResult);
+console.log("Cau 9 - Ten thuoc tinh",forInProps);
+console.log("Cau 9 - Gia tri tuong ung",forInValues);
+console.log("Cau 10 - Ten san pham dang ban va con hang",sellingAndInStockNames);
+</script>
+</body>
+</html>
